@@ -1,0 +1,446 @@
+{
+    "menu": {
+        "Home": "Home",
+        "Available cats": "Available cats",
+        "Donate": "Donate",
+        "Found a cat": "Found a cat",
+        "About us": "About us",
+        "Contact us": "Contact us",
+        "Login": "Login"
+    },
+    "pages": {
+        "home":{
+            "WelcomeMessage": "Welcome to",
+            "supportText": "Your support changes lives. Help us provide shelter, care, and love to cats in need. Donate today and be a part of their happy tails!",
+            "secondTitle": "About Cat Guardians",
+            "secondSupportText": "Our mission is simple yet profound: to provide a safe haven for cats in need and connect them with loving forever homes. Established in 2019, we have dedicated ourselves to rescuing, caring for, and finding loving families for countless feline friends. We believe that every cat deserves a life filled with love and care. Our shelter is not just a place, but a sanctuary where tails wag, purrs resonate, and hearts connect.",
+            "checkOurCats": "Check Our Cats",
+            "Donate": "Donate",
+            "haveQuestions": "Have any questions? Don’t hesitate to",
+            "contactUs": "contact us!",
+            "slider": {
+                "title": "Happy owners"
+            }
+        },
+        "availableCats": {
+            "title": "Available cats",
+            "filter": {
+                "title": "Filters",
+                "agetitle": "Age",
+                "gendertitle": "Gender",
+                "colortitle": "Color",
+                "age": {
+                    "Kitten (2 months - 1 years)": "Kitten (2 months - 1 years)",
+                    "Junior (1 years - 3 years)": "Junior (1 years - 3 years)",
+                    "Adult (3 years - 4 years)": "Adult (3 years - 4 years)",
+                    "Senior (4 years and older)": "Senior (4 years and older)"
+                },
+                "gender": {
+                    "Male": "Male",
+                    "Female": "Female"
+                },
+                "color": {
+                    "Black": "Black",
+                    "White": "White",
+                    "Gray": "Gray",
+                    "Tabby": "Tabby",
+                    "Orange": "Orange",
+                    "Tortoiseshell": "Tortoiseshell",
+                    "Blue": "Blie",
+                    "Pointed": "Pointed",
+                    "Calico": "Calico"
+                },
+                "button": "Clear filters"
+            },
+            "sort": {
+                "title": "Sort By",
+                "sortProperty": {
+                    "Youngest - oldest": "Youngest - oldest",
+                    "Oldest - youngest": "Oldest - youngest",
+                    "First added": "First added",
+                    "Last added": "Last added"
+                }
+            },
+            "petsCard": {
+                "ditailsLink": "Read more"
+            }
+        },
+        "petView": {
+            "similarPetsSlider": {
+                "title": "Similar cats"
+            },
+            "linksButton": {
+                "adoption": "Adopt me",
+                "BuyMeTreats": "Buy me treats"
+            },
+            "adoptionForm": {
+                "title": "Adoption application form",
+                "navigation": {
+                    "home": "Home",
+                    "petsList": "Available cats",
+                    "petsProfile": "Cat profile",
+                    "form": "Adoption application form"
+                },
+                "formStepsTitle": {
+                    "Personal details": "Personal details",
+                    "Reasons for adoption": "Reasons for adoption",
+                    "Household details": "Household details",
+                    "Agreement": "Agreement"
+                },
+                "formButtons": {
+                    "Previous": "Previous",
+                    "Next": "Next",
+                    "Submit": "Submit"
+                },
+                "formSteps": {
+                    "stepFirst": {
+                        "labels": {
+                            "fullName": "Full name",
+                            "address": "Address",
+                            "city": "City",
+                            "phone": "Phone number",
+                            "email": "Email address",
+                            "notes": "What are your reasons for adoption? (Required)"
+                        },
+                        "placeholders": {
+                            "fullName": "Enter your full name",
+                            "address": "Enter your address",
+                            "city": "Enter your city",
+                            "phone": "Enter your phone number",
+                            "email": "Enter your email",
+                            "notes": "Enter text"
+                        },
+                        "errorsMsg": {
+                            "fullName": "Enter your full name",
+                            "address": "Enter your address",
+                            "city": "Enter your city",
+                            "phone_number": {
+                                "required": "Phone number is required",
+                                "inValid": "Phone number is not valid"
+                            },
+                            "email": {
+                                "required": "Email is required",
+                                "inValid": "Email format is not valid"
+                            },
+                            "notes": "Enter reasons for adoption"
+                        }
+                    },
+                    "stepSecond": {
+                        "titles": {
+                            "maritalStatus": "1. What’s your marital status?",
+                            "peopleCount": "2. How many people, including yourself, live in your household?",
+                            "otherPets": "3. Do you own other pets?",
+                            "kidsCount": "4. Do you have kids?"
+                        },
+                        "labels": {
+                            "groupOne": {
+                                "Single": "Single",
+                                "Living with partner": "Living with partner",
+                                "Married": "Married",
+                                "Separated": "Separated",
+                                "Widowed": "Widowed",
+                                "Divorced": "Divorced"
+                            },
+                            "groupTwo": {
+                                "1": "1",
+                                "2": "2",
+                                "3": "3",
+                                "4": "4",
+                                "5": "5",
+                                "More than 5": "More than 5"
+                            },
+                            "groupThree": {
+                                "No": "No",
+                                "Yes, I own a cat": "Yes, I own a cat",
+                                "Yes, I own a dog": "Yes, I own a dog",
+                                "I own several pets (cats and/or dogs)": "I own several pets (cats and/or dogs)",
+                                "Other": "Other"
+                            },
+                            "groupFour": {
+                                "No": "No",
+                                "Yes": "Yes"
+                            }
+                        },
+                        "errorsMsg": "Select one of the items"
+                    },
+                    "stepThree": {
+                        "labels": {
+                            "I understand that the adopted cat is a lifelong commitment and agree to provide proper care, including but not limited to regular veterinary check-ups, necessary vaccinations, and a safe environment. I will provide appropriate food, water, shelter, and love.": "I understand that the adopted cat is a lifelong commitment and agree to provide proper care, including but not limited to regular veterinary check-ups, necessary vaccinations, and a safe environment. I will provide appropriate food, water, shelter, and love.",
+                            "I agree to keep the adopted cat strictly indoors at all times for its safety and well-being.": "I agree to keep the adopted cat strictly indoors at all times for its safety and well-being.",
+                            "If the cat has not been spayed/neutered at the time of adoption, I agree to have this procedure performed within a specified timeframe, as agreed upon with Cat Guardians.": "If the cat has not been spayed/neutered at the time of adoption, I agree to have this procedure performed within a specified timeframe, as agreed upon with Cat Guardians.",
+                            "If, for any reason, I cannot continue to care for the adopted cat, I will contact Cat Guardians immediately. I understand that I cannot transfer ownership or surrender the cat to another individual or shelter without the explicit consent of Cat Guardians.": "If, for any reason, I cannot continue to care for the adopted cat, I will contact Cat Guardians immediately. I understand that I cannot transfer ownership or surrender the cat to another individual or shelter without the explicit consent of Cat Guardians.",
+                             "I agree to allow representatives of Cat Guardians to conduct home checks and follow-up visits to ensure the welfare of the adopted cat.":  "I agree to allow representatives of Cat Guardians to conduct home checks and follow-up visits to ensure the welfare of the adopted cat.",
+                             "I release Cat Guardians from any liabilities, damages, or injuries caused by the adopted cat after the date of adoption.": "I release Cat Guardians from any liabilities, damages, or injuries caused by the adopted cat after the date of adoption."
+                        },
+                        "errorsMsg": "You must accept Terms and Conditions"
+                    }
+                },
+                "overlayModal": {
+                    "unauthorized": {
+                        "text": "Filling out the adoption form for pets is restricted to authorized users only. Please log in or create an account.",
+                        "title": "Access Restricted",
+                        "buttonTitle": "Go to Login/Signup"
+                    },
+                    "successSubmit": {
+                        "text": "Thank you for your adoption application! We're reviewing it carefully and will be in touch soon. Your interest in providing a loving home means a lot to us!",
+                        "title": "Thank you!",
+                        "buttonTitle": "Back to available cats"
+                    }
+                }
+            },
+            "requirementsTab": {
+                "tabFirst": "Requirements for potential owners",
+                "tabSecond": "Likes and dislikes"
+            }
+        },
+        "foundFormPage": {
+            "title": "Found a lost cat? Inform us",
+            "foundForm": {
+                "labels": {
+                    "name": "Name",
+                    "phone_number": "Telephone No.",
+                    "email": "Email address",
+                    "location": "Location (Where the cat was found)",
+                    "description": "Message",
+                    "file": {
+                        "title": {
+                            "main": "Drag & drop files or",
+                            "browse": "Browse"
+                        },
+                        "supportFormat": "Supported formats:",
+                        "selectFile": "No selected file"
+                    }
+                },
+                "placeholders": {
+                    "name": "Enter your name",
+                    "phone_number": "Enter your telephone number",
+                    "email": "Enter your email address",
+                    "location": "Location (Where the cat was found)",
+                    "description": "Enter your message"
+                },
+                "errorsMsg": {
+                    "name": "Field cannot be blank",
+                    "phone_number": {
+                        "required": "Field cannot be blank",
+                        "inValid": "Invalid telephone number format"
+                    },
+                    "email": {
+                        "required": "Email is required",
+                        "inValid": "Invalid email format"
+                    },
+                    "location": "Please enter location, where the cat was found",
+                    "description": {
+                        "required": "Description is required",
+                        "minLength": "Description must be at least 30 characters long."
+                    }
+                },
+                "sendButton": "Send",
+                "addSubmitWay": "or continue with"
+            },
+            "overlayModal": {
+                "unauthorized": {
+                    "text": "Submission of information about the cats you found is restricted to authorized users only. Please log in or create an account.",
+                    "title": "Access Restricted",
+                    "buttonTitle": "Go to Login/Signup"
+                },
+                "successSubmit": {
+                    "text": "Thank you for submitting an information about the found cat! We're reviewing it carefully and will be in touch soon.",
+                    "title": "Thank you!",
+                    "buttonTitle": "Back to home page"
+                }
+            }
+        },
+        "aboutUs": {
+            "titlePrimary": "About our shelter",
+            "titleSecondary": "Meet our team",
+            "textFirst": "Cat Guardians was founded in 2020 with a simple yet profound mission: to provide a loving and secure haven for cats in need. Since our doors first opened, we've been dedicated to rescuing, nurturing, and finding forever homes for countless feline friends. Over the years, our commitment to the welfare of these incredible animals has remained unwavering, and we look forward to continuing this journey with your support.",
+            "textSecond": "Our team of compassionate volunteers and staff work tirelessly to ensure that every cat in our care receives the love, attention, and medical support they deserve. We believe that every cat has a unique story and deserves a chance at a better life, which is why we go above and beyond to nurture and protect them. Our shelter is a nonprofit organization that operates solely on the generosity of supporters like you, relying entirely on donations to provide care and comfort to our beloved feline residents.",
+            "ourTeam": {
+                "director": {
+                    "name": "Petr Petrov",
+                    "jobTitle": "Director"
+                },
+                "manager": {
+                    "name": "Alina Ivanova",
+                    "jobTitle": "Manager"
+                },
+                "caretaker1": {
+                    "name": "Max Maximov",
+                    "jobTitle": "Caretaker"
+                },
+                "caretaker2": {
+                    "name": "Alexandra Alexandrova",
+                    "jobTitle": "Caretaker"
+                }
+            }
+        },
+        "contactUs": {
+            "title": "Let’s keep in touch!",
+            "secondaryTitle": {
+                "header": "If you found a cat that has been lost, please",
+                "link": "inform us."
+            },
+            "menu": {
+                "contact": {
+                    "title": "Contact us"
+                },
+                "visit": {
+                    "title": "Visit us",
+                    "address": {
+                        "street": "Topoleva Street, 2, Hatne, Kyiv Oblast,",
+                        "country": "Ukraine, 08160",
+                        "workingHours": "Mon - Sat 12:00-18:00"
+                    }
+                },
+                "socMedia": {
+                    "title": "Social media"
+                }
+            },
+            "footerText": "We are located in Gatny, Family housing complex near Kyiv."
+        },
+        "login": {
+            "title": "Login",
+            "noAccount": "No Account?",
+            "signUpLink": "Sign up",
+            "fields": {
+                "labels": {
+                    "email": "Email address",
+                    "password": "Password",
+                    "checkbox": "Remember me"
+                },
+                "placeholders": {
+                    "email": "Enter your email address",
+                    "password": "Enter your password"
+                },
+                "errorsMsg": {
+                    "email": {
+                        "required": "Email is required",
+                        "inValid": "Email format is not valid"
+                    },
+                    "password": {
+                        "required": "Password is required"
+                    }
+                }
+            },
+            "forgotPassword": "Forgot Password?",
+            "submitButton": "Log in",
+            "addLink": "or continue with"
+        },
+        "signUp": {
+            "title": "Sign up",
+            "haveAccount": "Have an account?",
+            "loginLink": "Log in",
+            "fields": {
+                "labels": {
+                    "email": "Email address",
+                    "password": "Password",
+                    "conPassword": "Confirm password",
+                    "checkbox": "Accept Terms & Conditions"
+                },
+                "placeholders": {
+                    "email": "Enter your email address",
+                    "password": "Enter your password",
+                    "conPassword": "Enter your confirm password"
+                },
+                "errorsMsg": {
+                    "email": {
+                        "required": "Email is required",
+                        "inValid": "Email format is not valid"
+                    },
+                    "password": {
+                        "required": "Password is required",
+                        "inValid": "Password must be at least 10 characters"
+                    },
+                    "conPassword": {
+                        "required": "Confirm password is required",
+                        "inValid": "Confirm Password does not match"
+                    },
+                    "checkbox": "You must accept Terms and Conditions"
+                }
+            },
+            "signUbButton": "Sign up",
+            "addLink": "or continue with"
+        },
+        "donate": {
+            "title": {
+                "main": "Who would you like to support?",
+                "secondary": "Other ways to support us"
+            },
+            "sectionLinks": {
+                "linkSupport": {
+                    "title": "Shelter",
+                    "description": {
+                        "main": "Donate to our shelter for basic",
+                        "additional": "needs and supplies"
+                    }
+                },
+                "linkPets": {
+                    "title": "Specific cat",
+                    "description": {
+                        "main": "Get treats for the cat that you",
+                        "additional": "prefer"
+                    }
+                }
+            },
+            "sectionOtherWay": {
+                "volunteer": {
+                    "title": "Volunteer your time",
+                    "text": "Offer your time to help with cleaning, feeding, socializing with the cats, or assisting with administrative tasks."
+                },
+                "donate": {
+                    "title": "Donate supplies",
+                    "text": "We often require supplies like cat food, litter, bedding, toys, and cleaning supplies."
+                },
+                "spread": {
+                    "title": "Spread the word",
+                    "text": "Share the shelter's posts and adoption events on social media. Word-of-mouth recommendations can lead to more adoptions and support."
+                },
+                "attend": {
+                    "title": "Attend our shelter events",
+                    "text": "Attend adoption events and encourage others to adopt by sharing your positive experience."
+                }
+            }
+        },
+        "donationForm": {
+            "navigation": {
+                "donatePage": "Donate",
+                "donateShelter": "Donate to the shelter"
+            },
+            "form": {
+                "paymentPeriod": {
+                    "One-time": "One-time",
+                    "Monthly": "Monthly"
+                },
+                "customAmount": {
+                    "placeholder": "Custom amount",
+                    "errorMsg": "Please enter the number."
+                },
+                "comment": {
+                    "label": "Add comment:",
+                    "placeholders": "Enter your comment"
+                },
+                "paymentMethod": "Payment method",
+                "terms": {
+                    "main": "I have read and agreed with the",
+                    "link": "Terms & conditions"
+                },
+                "buttonTitle": "Processed"
+            },
+            "petsSliderTitle": "Support more cats"
+        }
+    },
+    "footer": {
+        "socialMedia": "SOCIAL MEDIA",
+        "helpToUs": "HOW TO HELP US",
+        "contactUs": "CONTACT US",
+        "menuItem": {
+            "donation": "Donations",
+            "adoption": "Adoption",
+            "address": {
+                "street": "Topoleva str. 2,",
+                "city": "Hatne, Kyiv Oblast,",
+                "country": "Ukraine, 08160"
+            }
+        }
+    }
+}

@@ -1,0 +1,16 @@
+export const GET_POSTS = "/apiurl";
+export const GET_PETS = "/api/pets";
+export const GET_FOUND_PETS = "/api/found-cat/";
+export const EDDIT_FOUND_PETS = "/api/found-cat/edit";
+export const DELETE_FOUND_PETS = "/api/found-cat/delete";
+export const POST_FOUND_PETS = "/api/found-cat/create/";
+export const POST_SIGNUP = "/api/users/signup/";
+export const POST_LOGIN = "/api/users/login/";
+export const GET_ADOPTION = "/api/adoption";
+export const EDIT_ADOPTION = "/api/adoption/edit";
+export const DELETE_ADOPTION = "/api/adoption/delete";
+export const POST_ADOPTION = "/api/adoption/create/";
+export const GET_USER = "/api/users/check-auth/";
+export const EDIT_PETS = "/api/pets/edit";
+export const CREATE_PETS = "/api/pets/create/";
+export const DELETE_PETS = "/api/pets/delete";

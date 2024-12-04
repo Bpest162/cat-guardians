@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "module": "esnext",
+    "target": "es5",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "removeComments": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "allowJs": true,
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "downlevelIteration": true,
+    "types": ["node"],
+    "paths": {
+      "src/*": ["src/*"],
+      "/*": ["/*"]
+    },
+    "outDir": "dist"
+  },
+  "include": ["./src", "./src/declaration.d.ts", "**/*.ts", "**/*.json", "frontend/.eslintrc.json"],
+  "exclude": ["./config/webpack.dev.ts", "./config/webpack.prod.ts"]
+}
