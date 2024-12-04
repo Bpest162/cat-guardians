@@ -1,0 +1,153 @@
+version: '3.8'
+
+# For executing this docker-compose file, you need to have the following environment variables set in your .env file
+# - API_ECR_IMAGE_URI
+# - NGINX_ECR_IMAGE_URI
+# These variables are used to pull the images from the ECR repository and run the services. These variable URIs are
+# links to the images in the ECR repository, like 637423659023.dkr.ecr.eu-central-1.amazonaws.com/nginx:latest
+# Also, you need to have instaled aws-cli and to be authenticated with credentials that have access to the ECR repository
+
+services:
+  api:
+    restart: always
+    depends_on:
+      - postgres
+    image: ${AWS_ECR_IMAGE_URI_API}
+    environment:
+      PROJECT_DIR: ${PROJECT_DIR}
+    ports:
+      - "8000:8000"
+    env_file: .env
+    volumes:
+      - static_volume:$PROJECT_DIR/$PROJECT_DIR/static
+      - media_volume:$PROJECT_DIR/$PROJECT_DIR/media
+    command: >
+      sh -c "cd src &&
+             poetry run python3 manage.py collectstatic --noinput &&
+             poetry run python3 manage.py migrate &&
+             poetry run python3 manage.py colors_and_breeds_to_db &&
+             poetry run gunicorn api.wsgi:application -b 0.0.0.0:8000"
+
+# ^^^^^^^^^
+# For generating the catprofiles use the following command:
+#  docker-compose -f docker-compose.prod.yml exec api sh -c "cd src && poetry run python3 manage.py generate_cat_profiles"
+
+# - ./nginx-conf:/etc/nginx/conf.d/prod -- allows to attach nginx.conf.template with hardcoded value to
+#  nginx service directly
+  nginx:
+    restart: always
+    image: ${AWS_ECR_IMAGE_URI_UI}
+    environment:
+      PROJECT_DIR: ${PROJECT_DIR}
+      API_HOST: ${API_HOST}
+      ENVIRON: prod
+      DOMAIN: ${DOMAIN}
+    container_name: frontend_nginx
+    volumes:
+      - static_volume:$PROJECT_DIR/static
+      - media_volume:$PROJECT_DIR/media
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+      - ./dhparam:/etc/ssl/certs
+#      - ./nginx-conf:/etc/nginx/conf.d/prod
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+
+
+# Certbot service is used to generate SSL certificates for the domain
+# For testing purposes, dont't forget to use the staging environment '--staging' flag for not to exceed the limits
+# of the Let's Encrypt API
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    depends_on:
+      - nginx
+    command: >
+      certonly --webroot --webroot-path=/var/www/html
+      --email ${CERTBOT_EMAIL} --agree-tos --no-eff-email --non-interactive
+      -d ${DOMAIN} -d www.${DOMAIN}
+
+  postgres:
+    container_name: postgres_container
+    image: postgres:15.5-alpine3.18
+    restart: always
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=50"
+      - "-c"
+      - "shared_buffers=512MB"
+      - "-c"
+      - "effective_cache_size=4GB"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "maintenance_work_mem=512MB"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "temp_file_limit=10GB"
+      - "-c"
+      - "log_min_duration_statement=200ms"
+      - "-c"
+      - "idle_in_transaction_session_timeout=10s"
+      - "-c"
+      - "lock_timeout=1s"
+      - "-c"
+      - "statement_timeout=60s"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "pg_stat_statements.max=10000"
+      - "-c"
+      - "pg_stat_statements.track=all"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - catdb-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+
+  pgadmin:  # TODO: add a way for getting access to the pgadmin
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:8.0
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+
+
+volumes:
+  static_volume:
+  media_volume:
+  catdb-data:
+  pgadmin-data:
+  certbot-etc:
+  certbot-var:
+  web-root:
+
+networks:
+  postgres:
+    driver: bridge

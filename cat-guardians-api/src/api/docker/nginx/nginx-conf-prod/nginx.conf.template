@@ -1,0 +1,75 @@
+upstream api {
+    server ${API_HOST};
+}
+
+# Limit the number of requests per minute to the admin page  # TODO: Add securityn measures to protect the admin page from brute force attacks
+# limit_req_zone $binary_remote_addr zone=admin_page:10m rate=10r/m;
+# limit_req_status 429;
+
+server {
+    listen 80;
+    server_name $DOMAIN www.$DOMAIN;
+
+    location ~ /.well-known/acme-challenge {
+        allow all;
+        root /var/www/html;
+    }
+
+    location / {
+        rewrite ^ https://$host$request_uri? permanent;
+    }
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name $DOMAIN www.$DOMAIN;
+
+    server_tokens off;
+
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
+
+    ssl_buffer_size 8k;
+
+    ssl_dhparam /etc/ssl/certs/dhparam-2048.pem;
+
+    ssl_protocols TLSv1.2;
+    ssl_prefer_server_ciphers on;
+
+    ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:!ADH:!AECDH:!MD5;
+
+    ssl_ecdh_curve secp384r1;
+    ssl_session_tickets off;
+
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    resolver 8.8.8.8;
+
+    location /admin/login/ {
+    limit_req zone=admin_page burst=5 nodelay;
+    try_files $uri @api;
+    }
+
+    location / {
+        try_files $uri @api;
+    }
+
+    location @api {
+        include proxy_params;
+        proxy_pass http://api;
+        add_header X-Frame-Options "SAMEORIGIN" always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "no-referrer-when-downgrade" always;
+        add_header Content-Security-Policy "default-src * data: 'unsafe-eval' 'unsafe-inline' blob:;" always;
+    }
+
+    location /static/ {
+        alias /$PROJECT_DIR/static/;
+    }
+
+    location /media/ {
+        alias /$PROJECT_DIR/media/;
+    }
+}

@@ -1,0 +1,22 @@
+LOGGING:
+  version: 1
+  disable_existing_loggers: false
+  formatters:
+    default:
+      format: "[%(asctime)s.%(msecs)dZ]  %(levelname)s %(message)s"
+      datefmt: "%Y-%m-%dT%H:%M:%S"
+  handlers:
+    console:
+      formatter: default
+      level: INFO
+      class: logging.StreamHandler
+  loggers:
+    "":
+      level: INFO
+      handlers:
+        - console
+    django:
+      handlers:
+        - console
+      level: INFO
+      propagate: true

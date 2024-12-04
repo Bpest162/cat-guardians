@@ -1,0 +1,70 @@
+[tool.poetry]
+name = "cat-guardians-api"
+version = "0.2.0a68"
+description = "API for Cat Guardians App"
+authors = ["ASP <andrewpeshekhonov@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+# Python version should be under 3.12, as in 3.12+ pendulum dependency cannot be built (distutils removed)
+# Using Python version > 3.11.4 results in pytest fixture errors
+python = "^3.11"
+django = "^4.2.3"
+djangorestframework = "^3.14.0"
+django-environ = "^0.10.0"
+drf-yasg = "^1.21.7"
+itsdangerous = "^2.1.2"
+gunicorn = "^21.2.0"
+django-cors-headers = "^4.2.0"
+retrying = "^1.3.4"
+pendulum = "^2.1.2"
+django-filter = "^23.3"
+django-phonenumber-field = {extras = ["phonenumbers"], version = "^7.2.0"}
+django-rest-passwordreset = "^1.3.0"
+liqpay-sdk-python3 = "^1.0.6"
+psycopg2-binary = "^2.9.9"
+pillow = "^10.3.0"
+boto3 = "^1.34.114"
+django-storages = "^1.14.3"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.3.3"
+black = "^23.7.0"
+isort = "^5.12.0"
+flake8 = "^6.1.0"
+bandit = "^1.7.5"
+commitizen = "^3.5.4"
+ipython = "^8.24.0"
+django-extensions = "^3.2.3"
+django-debug-toolbar = "^4.4.2"
+
+[tool.poetry.group.test.dependencies]
+pytest-django = "^4.5.2"
+pytest-cov = "^4.1.0"
+pytest-xdist = "^3.3.1"
+pytest-mock = "^3.11.1"
+pytest-lazy-fixture = "^0.6.3"
+allure-pytest = "^2.13.2"
+
+
+[tool.poetry.group.generate_data.dependencies]
+faker = "19.2.0"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = 'src.api.settings'
+python_files = ['tests.py', 'test_*.py', '*_tests.py']
+pythonpath = '. src'
+#addopts = "--alluredir=allure_results"
+
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version = "0.2.0a68"
+version_scheme = "pep440"
+version_provider = "poetry"
+major_version_zero = true
+version_files = ["src/VERSION", "pyproject.toml:version", "src/api/yasg.py"]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

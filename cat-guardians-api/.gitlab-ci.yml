@@ -1,0 +1,174 @@
+workflow:
+ rules:
+   - if: $SKIP_WORKFLOW
+     when: never
+   - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TITLE =~ /^(?i)draft/
+     when: never
+   - if: $CI_MERGE_REQUEST_ID
+   - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
+   - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^(develop|main)$/
+   - if: $CI_COMMIT_BRANCH =~ /^(develop|main)$/
+
+
+stages:
+  - test
+  - auto-bump
+  - build
+  - deploy
+
+variables:
+  ENVIRONMENT: "gitlab-ci"
+  POSTGRES_DB: $POSTGRES_DB
+  POSTGRES_USER: $POSTGRES_USER
+  POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+  POSTGRES_HOST: $POSTGRES_HOST
+  POSTGRES_HOST_AUTH_METHOD_CI: trust
+
+services:
+  - name: postgres:15.5-alpine3.18
+    alias: postgres
+
+.test_template: &test_template
+  stage: test
+  image: python:3.11
+  before_script:
+    - apt-get update && apt-get install -y gettext && apt-get clean
+    - pip install poetry
+    - poetry config virtualenvs.create false
+    - poetry install --no-interaction --no-ansi
+    - cd src && poetry run django-admin compilemessages
+    - cd ..
+
+unit_test:
+  <<: *test_template
+  script:
+    - poetry run pytest --cov=src
+  coverage: /(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/
+
+lint_test:
+  <<: *test_template
+  script:
+    - >
+      if [[ -n "$CI_MERGE_REQUEST_IID" ]]; then
+        echo "This job was triggered by a merge request."
+        git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+        changed_files=$(git diff --name-only --diff-filter=d $CI_COMMIT_SHA $CI_MERGE_REQUEST_TARGET_BRANCH_NAME)
+      else
+        echo "This job was triggered by a branch push."
+        changed_files=$(git diff --name-only --diff-filter=d $CI_COMMIT_BEFORE_SHA $CI_COMMIT_SHA)
+      fi
+
+      echo "Changed files:"
+      echo "$changed_files"
+
+      for file in $changed_files; do
+        if [[ "$file" == *.py && -f "$file" && "$file" != *"migrations"* && "$file" != *"tests/"*  ]]; then
+          echo "Linting $file"
+          poetry run flake8 --max-line-length=120 $file  # Check for style and linting issues with Flake8
+          poetry run black --check --line-length=120 $file  # Check formatting with Black
+          poetry run bandit -r $file  # Check for security issues with Bandit
+        fi
+      done
+  only:
+    refs:
+      - merge_requests
+      - branches
+    changes:
+      - src/**/*
+
+auto-bump:
+  stage: auto-bump
+  image: python:3.11
+  rules:
+    - if: "$CI_COMMIT_BRANCH == 'develop'"
+      variables:
+        ENV: develop
+        CZ_CMD: "--files-only -pr alpha --increment minor"
+    - if: "$CI_COMMIT_BRANCH == 'main'"
+      variables:
+        ENV: main
+        CZ_CMD: "-ch"
+  dependencies: [ ]
+  before_script:
+    - pip3 install -U Commitizen
+  script:
+    - chmod +x scripts/auto_bump_script.sh # Make the script executable
+    - ./scripts/auto_bump_script.sh # Run the script
+  artifacts:
+    expire_in: 10 mins
+    paths:
+      - tag.txt
+
+
+# You must have personal access token (PA_TOKEN) with the following permissions: read_repository
+launch_ec2_instance_build_push:
+  variables:
+    PROJECT_URL: "https://$GITLAB_USER_LOGIN:$PA_TOKEN@git.foxminded.ua/$CI_PROJECT_PATH"
+    SCRIPT_PATH: scripts/ecr_image_build_push.sh  # The script which will be executed on the instance,
+    SCRIPT_NAME: ecr_image_build_push.sh          # for building and pushing the image to ECR
+  stage: deploy
+  only:
+    - develop
+  image:
+    name: amazon/aws-cli
+    entrypoint: [ "" ]
+  before_script:
+    - yum update -y
+    - yum install -y openssh-clients
+    - eval $(ssh-agent -s)
+    - aws --version
+    - export TAG=$(cat tag.txt)
+    - echo $TAG
+    - echo $CI_COMMIT_SHORT_SHA
+    # Launch an EC2 instance with the user data script to install docker, docker-compose and aws-cli, Ubuntu 20.04 LTS image AMI id
+    # Change the security group id, key pair name and the user data script to your own
+    # security group id, open port 22, 80, 443 for outbound and inbound rules
+    - INSTANCE_ID=$(aws ec2 run-instances
+      --image-id $EC2_IMAGE_ID
+      --count $EC2_COUNT
+      --instance-type $EC2_INSTANCE_TYPE
+      --security-group-ids $EC2_SECURITY_GROUP_ID
+      --region $AWS_DEFAULT_REGION
+      --key-name $EC2_KEY_NAME
+      --user-data file://./scripts/user-data.sh
+      --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=build-push-server}]'
+      --query 'Instances[0].InstanceId'
+      --output text
+      )
+    - echo $INSTANCE_ID
+    - echo $INSTANCE_ID > /tmp/instance_id.txt  # Save instance id to a file
+    # Get the public DNS name of the instance
+    - PUBLIC_DNS=$(aws ec2 describe-instances
+      --instance-ids $INSTANCE_ID
+      --query 'Reservations[0].Instances[0].PublicDnsName'
+      --output text)
+    - echo $PUBLIC_DNS
+    - echo  $SSH_USER@$PUBLIC_DNS
+    - aws ec2 wait instance-status-ok --instance-ids $INSTANCE_ID
+  script:
+    # You must have the private ssh key.pem (EC2_PEM_KEY) in the CI/CD variables, this key is the same as --key-name $EC2_KEY_NAME
+    - chmod +x ./$SCRIPT_PATH
+    - echo "$EC2_PEM_KEY" > /home/pair-key.pem
+    - chmod 400 /home/pair-key.pem
+    - cat ./$SCRIPT_PATH | ssh -i /home/pair-key.pem -o StrictHostKeyChecking=no ubuntu@$PUBLIC_DNS "
+      cat > /home/ubuntu/$SCRIPT_NAME &&
+      chmod +x /home/ubuntu/$SCRIPT_NAME &&
+      PA_TOKEN=$PA_TOKEN
+      TAG=$TAG
+      CI_COMMIT_SHORT_SHA=$CI_COMMIT_SHORT_SHA
+      CI_PROJECT_NAME=$CI_PROJECT_NAME
+      PROJECT_URL=$PROJECT_URL
+      AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+      AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+      AWS_ECR_REGISTRY=$AWS_ECR_REGISTRY
+      AWS_ECR_IMAGE_URI_API=$AWS_ECR_IMAGE_URI_API
+      bash /home/ubuntu/$SCRIPT_NAME > /home/ubuntu/output.txt
+      "
+  #   Terminate the instance after the script is executed
+  after_script:
+    - export INSTANCE_ID=$(cat /tmp/instance_id.txt)
+    - echo $INSTANCE_ID
+    - aws ec2 terminate-instances --instance-ids $INSTANCE_ID
+    - aws ec2 wait instance-terminated --instance-ids $INSTANCE_ID
+    - echo "Instance $INSTANCE_ID terminated"
